@@ -16,9 +16,8 @@
 //   - whether an event with no matching transition is an error
 //     ([Builder.StrictTransitions]).
 //
-// Events are applied to the resulting [StateMachine] with
-// [StateMachine.Apply] or [StateMachine.ApplyWithContext], and the current
-// state is read with [StateMachine.State].
+// Events are applied to the resulting [Machine] with [Machine.Apply] or
+// [Machine.ApplyWith], and the current state is read with [Machine.State].
 //
 // # Type parameters
 //
@@ -59,15 +58,14 @@
 //
 // # Listeners and contexts
 //
-// A [StatefulFunc] listener may be registered for any state. When an event
-// causes a transition, the exit listeners of the current state are called,
-// then the machine moves to the new state, then the enter listeners of the new
-// state are called. Listeners for a state run in the order they were
-// registered.
+// A [Listener] may be registered for any state. When an event causes a
+// transition, the exit listeners of the current state are called, then the
+// machine moves to the new state, then the enter listeners of the new state are
+// called. Listeners for a state run in the order they were registered.
 //
-// [StateMachine.ApplyWithContext] passes a context value to every listener
-// called by that transition. This keeps listeners decoupled from the code that
-// applies events. [StateMachine.Apply] passes the zero value of C.
+// [Machine.ApplyWith] passes a context value to every listener called by that
+// transition. This keeps listeners decoupled from the code that applies events.
+// [Machine.Apply] passes the zero value of C.
 //
 // # Strict transitions
 //
@@ -79,7 +77,7 @@
 //
 // # Concurrency
 //
-// A [StateMachine] is not safe for concurrent use. If events are applied from
+// A [Machine] is not safe for concurrent use. If events are applied from
 // several goroutines, or the state is read while events are applied,
 // synchronize access externally. Listeners run synchronously on the goroutine
 // that called Apply and should not apply events to the machine that called

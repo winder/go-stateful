@@ -67,13 +67,13 @@ func Example() {
 		{End, "finished"},
 	}
 	for _, e := range events {
-		if err := sm.ApplyWithContext(e.event, &Context{Message: e.message}); err != nil {
+		if err := sm.ApplyWith(e.event, &Context{Message: e.message}); err != nil {
 			fmt.Println(err)
 		}
 	}
 
 	// The job is complete, so it can no longer run.
-	if err := sm.ApplyWithContext(Run, &Context{Message: "again"}); err != nil {
+	if err := sm.ApplyWith(Run, &Context{Message: "again"}); err != nil {
 		fmt.Println(err)
 	}
 

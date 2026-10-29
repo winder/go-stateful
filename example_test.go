@@ -95,7 +95,7 @@ func ExampleBuilder_Build() {
 	// Output: unlocked locked
 }
 
-func ExampleStateMachine_Apply() {
+func ExampleMachine_Apply() {
 	sm := stateful.NewBuilder[string, string, any]("locked").
 		AddTransition("locked", "coin", "unlocked").
 		Build()
@@ -116,7 +116,7 @@ func ExampleStateMachine_Apply() {
 	// unlocked
 }
 
-func ExampleStateMachine_ApplyWithContext() {
+func ExampleMachine_ApplyWith() {
 	type payment struct {
 		cents int
 	}
@@ -128,11 +128,11 @@ func ExampleStateMachine_ApplyWithContext() {
 		}).
 		Build()
 
-	_ = sm.ApplyWithContext("coin", &payment{cents: 25})
+	_ = sm.ApplyWith("coin", &payment{cents: 25})
 	// Output: Unlocked after a payment of 25 cents
 }
 
-func ExampleStateMachine_ApplyWithContext_contextContext() {
+func ExampleMachine_ApplyWith_contextContext() {
 	type requestIDKey struct{}
 
 	// A context.Context works well as the context type.
@@ -144,12 +144,12 @@ func ExampleStateMachine_ApplyWithContext_contextContext() {
 		Build()
 
 	ctx := context.WithValue(context.Background(), requestIDKey{}, "abc123")
-	_ = sm.ApplyWithContext("coin", ctx)
+	_ = sm.ApplyWith("coin", ctx)
 	// Output: Unlocked by request abc123
 }
 
-func ExampleStateMachine_State() {
-	var sm *stateful.StateMachine[string, string, any]
+func ExampleMachine_State() {
+	var sm *stateful.Machine[string, string, any]
 
 	// Exit listeners see the old state, enter listeners see the new state.
 	sm = stateful.NewBuilder[string, string, any]("locked").
@@ -168,9 +168,9 @@ func ExampleStateMachine_State() {
 	// after: unlocked
 }
 
-func ExampleStatefulFunc() {
+func ExampleListener() {
 	// A listener factory which logs state changes.
-	logState := func(action, state string) stateful.StatefulFunc[any] {
+	logState := func(action, state string) stateful.Listener[any] {
 		return func(any) { fmt.Println(action, state) }
 	}
 

@@ -90,7 +90,7 @@ sm := stateful.NewBuilder[State, Event, *Context](Init).
 	OnEnter(Running, func(c *Context) { fmt.Println("Entering Running:", c.Message) }).
 	Build()
 
-sm.ApplyWithContext(Run, &Context{Message: "Started at: " + time.Now().String()})
+sm.ApplyWith(Run, &Context{Message: "Started at: " + time.Now().String()})
 ```
 
 The context type can be anything, including a `context.Context`. Use `any` if
@@ -127,5 +127,5 @@ sm.Apply(Run)
 
 ### Concurrency
 
-A `StateMachine` is not safe for concurrent use. Synchronize access externally
+A `Machine` is not safe for concurrent use. Synchronize access externally
 if events are applied from several goroutines.

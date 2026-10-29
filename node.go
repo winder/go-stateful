@@ -1,17 +1,17 @@
 package stateful
 
-// StatefulFunc is a listener called when a state machine enters or exits a
-// state. It receives the context passed to [StateMachine.ApplyWithContext], or
-// the zero value of C when the event was applied with [StateMachine.Apply].
-type StatefulFunc[C any] func(c C)
+// Listener is called when a state machine enters or exits a state. It
+// receives the context value passed to [Machine.ApplyWith], or the zero value
+// of C when the event was applied with [Machine.Apply].
+type Listener[C any] func(c C)
 
 // node is a single state in the transition graph along with its outgoing
 // transitions and listeners.
 type node[S, E comparable, C any] struct {
 	state     S
 	neighbors map[E]*node[S, E, C]
-	onEnter   []StatefulFunc[C]
-	onExit    []StatefulFunc[C]
+	onEnter   []Listener[C]
+	onExit    []Listener[C]
 }
 
 func newNode[S, E comparable, C any](state S) *node[S, E, C] {

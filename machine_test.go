@@ -64,7 +64,7 @@ func newBuilder() *builder {
 	return stateful.NewBuilder[state, event, *testContext](initState)
 }
 
-func TestStateMachineTransitions(t *testing.T) {
+func TestMachineTransitions(t *testing.T) {
 	sm := newBuilder().
 		AddTransition(initState, run, running).
 		AddTransition(running, pause, paused).
@@ -162,7 +162,7 @@ func TestUnexpectedEventDoesNotCallListeners(t *testing.T) {
 	}
 }
 
-func TestApplyWithContext(t *testing.T) {
+func TestApplyWith(t *testing.T) {
 	const expectedMessage = "message"
 	var exitMessage, enterMessage string
 
@@ -172,7 +172,7 @@ func TestApplyWithContext(t *testing.T) {
 		OnEnter(running, func(c *testContext) { enterMessage = c.message }).
 		Build()
 
-	require.NoError(t, sm.ApplyWithContext(run, &testContext{message: expectedMessage}))
+	require.NoError(t, sm.ApplyWith(run, &testContext{message: expectedMessage}))
 	assert.Equal(t, expectedMessage, exitMessage)
 	assert.Equal(t, expectedMessage, enterMessage)
 }
@@ -198,7 +198,7 @@ func TestValueContext(t *testing.T) {
 		OnEnter(running, func(c int) { got = c }).
 		Build()
 
-	require.NoError(t, sm.ApplyWithContext(run, 42))
+	require.NoError(t, sm.ApplyWith(run, 42))
 	assert.Equal(t, 42, got)
 }
 
@@ -211,13 +211,13 @@ func TestContextContext(t *testing.T) {
 		Build()
 
 	ctx := context.WithValue(context.Background(), key{}, "value")
-	require.NoError(t, sm.ApplyWithContext(run, ctx))
+	require.NoError(t, sm.ApplyWith(run, ctx))
 	assert.Equal(t, "value", got)
 }
 
 func TestListenerOrder(t *testing.T) {
 	var calls []string
-	record := func(name string) stateful.StatefulFunc[*testContext] {
+	record := func(name string) stateful.Listener[*testContext] {
 		return func(*testContext) { calls = append(calls, name) }
 	}
 
@@ -239,7 +239,7 @@ func TestListenerOrder(t *testing.T) {
 }
 
 func TestStateDuringListeners(t *testing.T) {
-	var sm *stateful.StateMachine[state, event, *testContext]
+	var sm *stateful.Machine[state, event, *testContext]
 	var duringExit, duringEnter state
 
 	sm = newBuilder().

@@ -62,7 +62,7 @@ func (b *Builder[S, E, C]) AddTransition(startState S, event E, endState S) *Bui
 // added. A nil listener is ignored.
 //
 // It returns b so that calls can be chained.
-func (b *Builder[S, E, C]) OnEnter(state S, onEnter StatefulFunc[C]) *Builder[S, E, C] {
+func (b *Builder[S, E, C]) OnEnter(state S, onEnter Listener[C]) *Builder[S, E, C] {
 	n := b.node(state)
 	if onEnter != nil {
 		n.onEnter = append(n.onEnter, onEnter)
@@ -75,7 +75,7 @@ func (b *Builder[S, E, C]) OnEnter(state S, onEnter StatefulFunc[C]) *Builder[S,
 // were added. A nil listener is ignored.
 //
 // It returns b so that calls can be chained.
-func (b *Builder[S, E, C]) OnExit(state S, onExit StatefulFunc[C]) *Builder[S, E, C] {
+func (b *Builder[S, E, C]) OnExit(state S, onExit Listener[C]) *Builder[S, E, C] {
 	n := b.node(state)
 	if onExit != nil {
 		n.onExit = append(n.onExit, onExit)
@@ -85,7 +85,7 @@ func (b *Builder[S, E, C]) OnExit(state S, onExit StatefulFunc[C]) *Builder[S, E
 
 // StrictTransitions configures whether applying an event which has no
 // transition from the current state is an error. When strict is true, the
-// default, [StateMachine.Apply] and [StateMachine.ApplyWithContext] return an
+// default, [Machine.Apply] and [Machine.ApplyWith] return an
 // [*UnexpectedEventError]. When strict is false they return nil. In both cases
 // the state does not change and no listeners are called.
 //
@@ -101,7 +101,7 @@ func (b *Builder[S, E, C]) StrictTransitions(strict bool) *Builder[S, E, C] {
 // The machine gets its own copy of the declaration, so changes made to b after
 // Build do not affect it. Build may be called several times to create
 // independent machines.
-func (b *Builder[S, E, C]) Build() *StateMachine[S, E, C] {
+func (b *Builder[S, E, C]) Build() *Machine[S, E, C] {
 	// Copy the graph so that later changes to the builder do not affect
 	// machines which have already been built.
 	nodes := make(map[S]*node[S, E, C], len(b.nodes))
@@ -119,7 +119,7 @@ func (b *Builder[S, E, C]) Build() *StateMachine[S, E, C] {
 		}
 	}
 
-	return &StateMachine[S, E, C]{
+	return &Machine[S, E, C]{
 		current: nodes[b.root.state],
 		strict:  b.strict,
 	}

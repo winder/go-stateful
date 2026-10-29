@@ -10,9 +10,6 @@ Stateful
   <a href="https://pkg.go.dev/github.com/winder/go-stateful">
     <img title="Go Documentation" src="https://pkg.go.dev/badge/github.com/winder/go-stateful?style=flat-square">
   </a>
-  <a href="https://goreportcard.com/report/github.com/winder/go-stateful">
-    <img title="Go Report Card" src="https://goreportcard.com/badge/github.com/winder/go-stateful?style=flat-square">
-  </a>
 </p>
 
 Stateful is a simple and lightweight event driven state machine library. With
